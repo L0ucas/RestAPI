@@ -6,4 +6,8 @@ in conjunction with the data storage udner Microsoft SQL Server Management Studi
 - @Put Updates current user details based on its unique Id.
 - @Delete Removes user details based on its unique Id.
 
-#
+# Installation and Run
+Download the Code above and run the Crud_test application under the bin/release folder.
+![image](https://github.com/L0ucas/RestAPI/assets/50651727/549b5cf5-cfea-4c76-b188-c2c1690317a8)
+
+
