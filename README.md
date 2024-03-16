@@ -43,7 +43,7 @@ UpdateUser
 - Method: Put
 - Content Type: application/json
 - Request Parameter:
-  ![image](https://github.com/L0ucas/RestAPI/assets/50651727/c36de655-7180-4b61-80b1-101f048e27bb)
+   ![image](https://github.com/L0ucas/RestAPI/assets/50651727/c36de655-7180-4b61-80b1-101f048e27bb)
 
 AddUser
 - Endpoint: http://localhost:5000/api/User/AddUser
