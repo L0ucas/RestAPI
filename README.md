@@ -43,19 +43,19 @@ UpdateUser
 - Method: Put
 - Content Type: application/json
 - Request Parameter:
-   ![image](https://github.com/L0ucas/RestAPI/assets/50651727/c36de655-7180-4b61-80b1-101f048e27bb)
+- ![image](https://github.com/L0ucas/RestAPI/assets/50651727/c36de655-7180-4b61-80b1-101f048e27bb) Done
 
 AddUser
 - Endpoint: http://localhost:5000/api/User/AddUser
 - Method: Post
 - Content Type: application/json
 - Request Parameter:
-  ![image](https://github.com/L0ucas/RestAPI/assets/50651727/c36de655-7180-4b61-80b1-101f048e27bb)
+- ![image](https://github.com/L0ucas/RestAPI/assets/50651727/c36de655-7180-4b61-80b1-101f048e27bb) Done
 
 DeleteUser
 - Endpoint: http://localhost:5000/api/User/DeleteUser
 - Method: Post
 - Content Type: application/json
 - Request Parameter:
-   ![image](https://github.com/L0ucas/RestAPI/assets/50651727/4ef8bdbc-9324-442a-b036-4b0ab58165a1)
+- ![image](https://github.com/L0ucas/RestAPI/assets/50651727/4ef8bdbc-9324-442a-b036-4b0ab58165a1) Done
 
