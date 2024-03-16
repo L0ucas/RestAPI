@@ -30,3 +30,6 @@ CREATE TABLE [dbo].[tblTestUser]
 )
 GO
 ```
+*Please replace your database connection string inside appsettings.json under default connections.
+![image](https://github.com/L0ucas/RestAPI/assets/50651727/4b49128b-88a0-4025-8d9f-935a2c35ce5c)
+
