@@ -25,7 +25,7 @@ CREATE TABLE [dbo].[tblTestUser]
 	[Number] [varchar](100) NULL,
 	[Skillsets] [varchar](100) NOT NULL,
 	[Hobby] [varchar](100) NOT NULL,
-	[Active] [bit] NOT NULL,
+	[Active] [bit] NOT NULL
  CONSTRAINT [PK_TestUser_Id] PRIMARY KEY NONCLUSTERED 
 )
 GO
