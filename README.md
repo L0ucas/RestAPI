@@ -17,19 +17,20 @@ BEGIN
 	DROP TABLE [dbo].[tblTestUser]
 END
 GO
-CREATE TABLE [dbo].[tblTestUser](
+CREATE TABLE [dbo].[tblTestUser]
+(
 	[Id] [uniqueidentifier] NOT NULL,
 	[Username] [nvarchar](50) NOT NULL,
 	[Email] [varchar](100) NOT NULL,
 	[Number] [varchar](100) NULL,
 	[Skillsets] [varchar](100) NOT NULL,
 	[Hobby] [varchar](100) NOT NULL,
-	[Active] [bit] NOT NULL,
+	[Active] [bit] NOT NULL
  CONSTRAINT [PK_tblTestUser_Id] PRIMARY KEY NONCLUSTERED 
-(
+ (
 	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+ )
+)
 GO
 
 ```
@@ -62,7 +63,7 @@ UpdateUser
 
 DeleteUser
 - Endpoint: http://localhost:5000/api/User/DeleteUser
-- Method: Post
+- Method: Delete
 - Content Type: application/json
 - Request Parameter:
 - ![image](https://github.com/L0ucas/RestAPI/assets/50651727/4ef8bdbc-9324-442a-b036-4b0ab58165a1)
