@@ -38,6 +38,10 @@ GetAllUsers
 - Endpoint: http://localhost:5000/api/User/GetAllUsers
 - Method: Get
 
+GetUsersByName
+- Endpoint: http://localhost:5000/api/User/GetUsersByName/{Name}
+- Method: Get
+
 AddUser
 - Endpoint: http://localhost:5000/api/User/AddUser
 - Method: Post
