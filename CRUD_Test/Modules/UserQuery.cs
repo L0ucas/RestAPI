@@ -32,6 +32,7 @@ namespace CRUD_Test.Modules
                     user.Number = dt.Rows[i]["Number"].ToString();
                     user.Skillsets = dt.Rows[i]["Skillsets"].ToString();
                     user.Hobby = dt.Rows[i]["Hobby"].ToString();
+                    user.Active = dt.Rows[i]["Active"].ToString();
 
                     Users.Add(user);
                 }
@@ -78,6 +79,7 @@ namespace CRUD_Test.Modules
                     user.Number = dt.Rows[0]["Number"].ToString();
                     user.Skillsets = dt.Rows[0]["Skillsets"].ToString();
                     user.Hobby = dt.Rows[0]["Hobby"].ToString();
+                    user.Active = dt.Rows[0]["Active"].ToString();
                     Response.StatusCode = 200;
                     Response.Message = "Users Retrieved.";
                     Response.UserData = user;
