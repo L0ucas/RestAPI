@@ -17,18 +17,21 @@ BEGIN
 	DROP TABLE [dbo].[tblTestUser]
 END
 GO
-CREATE TABLE [dbo].[tblTestUser]
-(
+CREATE TABLE [dbo].[tblTestUser](
 	[Id] [uniqueidentifier] NOT NULL,
 	[Username] [nvarchar](50) NOT NULL,
 	[Email] [varchar](100) NOT NULL,
 	[Number] [varchar](100) NULL,
 	[Skillsets] [varchar](100) NOT NULL,
 	[Hobby] [varchar](100) NOT NULL,
-	[Active] [bit] NOT NULL
- CONSTRAINT [PK_TestUser_Id] PRIMARY KEY NONCLUSTERED 
-)
+	[Active] [bit] NOT NULL,
+ CONSTRAINT [PK_tblTestUser_Id] PRIMARY KEY NONCLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
 GO
+
 ```
 *Please replace your database connection string inside appsettings.json under default connections.
 ![image](https://github.com/L0ucas/RestAPI/assets/50651727/4b49128b-88a0-4025-8d9f-935a2c35ce5c)
