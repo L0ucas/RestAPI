@@ -38,6 +38,7 @@ GO
 ![image](https://github.com/L0ucas/RestAPI/assets/50651727/4b49128b-88a0-4025-8d9f-935a2c35ce5c)
 
 ## Test API
+(You may test using postman.)
 GetAllUsers
 - Endpoint: http://localhost:5000/api/User/GetAllUsers
 - Method: Get
