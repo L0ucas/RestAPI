@@ -44,6 +44,7 @@ GetAllUsers
 GetUsersByName
 - Endpoint: http://localhost:5000/api/User/GetUsersByName/{Name}
 - Method: Get
+- Request Parameter: Insert active username into endpoint.
 
 AddUser
 - Endpoint: http://localhost:5000/api/User/AddUser
