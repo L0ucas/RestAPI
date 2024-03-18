@@ -25,6 +25,7 @@ namespace CRUD_Test.Modules
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
+                    //Assigning each output values inside a list by looping through each row.
                     UserData user = new UserData();
                     user.Id = dt.Rows[i]["Id"].ToString();
                     user.Username = dt.Rows[i]["Username"].ToString();
@@ -34,6 +35,7 @@ namespace CRUD_Test.Modules
                     user.Hobby = dt.Rows[i]["Hobby"].ToString();
                     user.Active = dt.Rows[i]["Active"].ToString();
 
+                    //Adding assignment values into the list.
                     Users.Add(user);
                 }
             }
@@ -71,7 +73,7 @@ namespace CRUD_Test.Modules
 
             if (dt.Rows.Count > 0)
             {
-         
+                    // Assigning output values.
                     UserData user = new UserData();
                     user.Id = dt.Rows[0]["Id"].ToString();
                     user.Username = dt.Rows[0]["Username"].ToString();
@@ -112,6 +114,7 @@ namespace CRUD_Test.Modules
 
             //SqlDataAdapter da = new SqlDataAdapter(cmd);
 
+            // To determine whether the query executed perfectly.
             if (j > 0)
             {
                 Response.StatusCode = 200;
@@ -141,6 +144,7 @@ namespace CRUD_Test.Modules
 
             //SqlDataAdapter da = new SqlDataAdapter(cmd);
 
+            // To determine whether the query executed perfectly.
             if (j > 0)
             {
                 Response.StatusCode = 200;
@@ -170,6 +174,7 @@ namespace CRUD_Test.Modules
 
             //SqlDataAdapter da = new SqlDataAdapter(cmd);
 
+            // To determine whether the query executed perfectly.
             if (j > 0)
             {
                 Response.StatusCode = 200;
