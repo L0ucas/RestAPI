@@ -39,6 +39,7 @@ GO
 
 ## Test API
 (You may test using postman.)
+
 GetAllUsers
 - Endpoint: http://localhost:5000/api/User/GetAllUsers
 - Method: Get
