@@ -1,7 +1,7 @@
 # RestAPI
 This project consist of a simple rest API that performs the following verbs: @Get, @Post, @Put and @Delete 
 in conjunction with the data storage udner Microsoft SQL Server Management Studio.
-- @Get retrieves all of the active users inside the table, you may retrieve a specific user via its unique Id.
+- @Get retrieves all of the active users inside the table, you may retrieve an active user via its name as an input.
 - @Post Registers the new user and pumps its details into the database.
 - @Put Updates current user details based on its user's name.
 - @Delete Removes user details based on the user's name.
@@ -26,17 +26,28 @@ CREATE TABLE [dbo].[tblTestUser]
 	[Skillsets] [varchar](100) NOT NULL,
 	[Hobby] [varchar](100) NOT NULL,
 	[Active] [bit] NOT NULL
- CONSTRAINT [PK_TestUser_Id] PRIMARY KEY NONCLUSTERED 
+ CONSTRAINT [PK_tblTestUser_Id] PRIMARY KEY NONCLUSTERED 
+ (
+	[Id] ASC
+ )
 )
 GO
+
 ```
 *Please replace your database connection string inside appsettings.json under default connections.
 ![image](https://github.com/L0ucas/RestAPI/assets/50651727/4b49128b-88a0-4025-8d9f-935a2c35ce5c)
 
 ## Test API
+(You may test using postman.)
+
 GetAllUsers
 - Endpoint: http://localhost:5000/api/User/GetAllUsers
 - Method: Get
+
+GetUsersByName
+- Endpoint: http://localhost:5000/api/User/GetUsersByName/{Name}
+- Method: Get
+- Request Parameter: Insert username into endpoint.
 
 AddUser
 - Endpoint: http://localhost:5000/api/User/AddUser
@@ -54,7 +65,7 @@ UpdateUser
 
 DeleteUser
 - Endpoint: http://localhost:5000/api/User/DeleteUser
-- Method: Post
+- Method: Delete
 - Content Type: application/json
 - Request Parameter:
 - ![image](https://github.com/L0ucas/RestAPI/assets/50651727/4ef8bdbc-9324-442a-b036-4b0ab58165a1)
