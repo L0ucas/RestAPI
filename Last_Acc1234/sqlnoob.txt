@@ -1,0 +1,234 @@
+select * from tblBSMasterData
+where BankName = 'Bank BUMI arta'
+
+Update tblBSMasterData
+set HasLoginIssue = 0
+where BankName = 'Bank BRI'
+
+select * from tblBSConfig
+
+select * from tblBSServerMapping
+
+select * from tblRPACredential
+
+select * from tblRocMonitorTask
+where ProcessName like '%Attachment%'
+
+select * from tblRocMonitorTaskSchedule
+where RocMonitorTaskId  = '427E874E-BA73-41B5-8D7C-10B39B30F25D'
+
+exec UspBSDetailLogInfo
+
+select * from tblRPACredential
+where UserName = 'R_EXPEN_BILL'
+
+select * from tblBSTreasuryDetailLog
+where convert(date, UploadDate) = convert(date, getdate())
+
+sp_helptext UspInsertBankStatementProcess
+
+select * from tblBSDetailLog
+where ProcessName = 'SAP Upload Statement'
+
+select * from
+
+select * from 
+tbl
+select * from FF67_BankList
+where Status = 'Active' AND CompanyCd = '8892'
+
+select * from tblRPACredential
+
+
+
+sp_helptext sp_ARClearing_New
+
+Update tblBSConfig
+set SettingValue = 'rpa.support@aspiro.co,Aspiro.FA.GA.ID@aspiro.co,hueyleng.sing@aspiro.co'
+where Id = '49'
+
+select * from tblChnOTCBillingCompany
+
+Update tblChnOTCBillingCompany
+set ProcessBy = 'MYKULASPL0200'
+where ProcessBy = 'MYKULASPRPA0019'
+
+MYKULASPL0200
+
+sp_helptext UspChnOTCBillingCompanySel
+
+Update tblBSMasterData
+set HasLoginIssue = 0
+where BankName = 'Bank BrI'
+
+sp_helptext UspChnOTCBillingCompanySel
+
+select * from tblHRIndoEPDFTrxLog
+order by Logdatetime desc
+
+Update tblHRIndoEPDFTrxLog
+set NIK = '1149137'
+where Id = 'A3C623F2-608A-4CAF-90D2-362E05530B53'
+
+select * from tblBSDetailLog
+
+sp_helptext UspInsertBankStatementProcess
+
+select top 100 * from tblRocData
+where Process = '148483-APP-HR-ID-NPayroll-SMF_Incident_Ticket_Tool'
+order by Starttime desc
+
+
+
+select * from tblRPAParameter
+where ParamKey = 'Bot Database'
+
+sp_helptext UsptblBSDetailLogInfo
+
+Update tblHRIndoEPDFTrxLog
+set NIK = '1147936'
+where id = 'FBB5D39E-144F-4A4E-BBD0-1108F3A236C9'
+
+select * from tblRocMonitorTask
+where ToolType = 'Minibot'
+
+
+
+select * from AgeingConfig
+
+select * from tblHRIndoEPDFTrxLog
+where convert(date, Logdatetime) = convert(date, getdate())
+
+--select * from tblHRIndoEPDFTrxLog
+--where Id = '25BEC7F6-4059-4A90-B27A-E18D9DBE4E1A'
+
+select * from tblRocData
+where Desktop = 'MYZCAASPRPA0019' AND convert(date, TimStmp) = convert(date, '2023-10-03')
+
+Select * from tblHRIndoEPDFTrxLog
+order by LogDateTime desc
+
+where Id = '25BEC7F6-4059-4A90-B27A-E18D9DBE4E1A'
+
+select * from tblRPACalendar
+
+sp_helptext UspBSDetailLogInfo
+
+
+select * from tblBSTreasuryDetailLog
+where convert(date, UploadDate) = convert(date, '2023-10-05')
+
+select * from tblRocMonitorTask
+where ToolType = 'Minibot' AND Active = '1'
+
+where ProcessName = '183217-app-fa-cn-ptp-payment-auto-posting'
+where ProcessName like '%176319%'
+
+select * from tblROC
+
+Update tblBSMasterData
+set HasLoginIssue = 0
+where BankName = 'Bank Permata'
+
+select * from AgeingConfig
+
+select * from tblHRIndoEPDFTrxLog
+order by LogDateTime desc
+
+select * from tblRocMonitorTask
+
+select * from tblBankRecon_Output
+where convert(date, TimStmp) = convert(date, getdate())
+
+select * from tblRocMonitorTask
+where ProcessName like '%176319%'
+
+select * from tblRocMonitorTaskSchedule
+where RocMonitorTaskId = '47B57B05-578F-4CD1-B0B5-0E9832018966'
+
+Update tblRocMonitorTask
+set Status = 1
+where Id = '47B57B05-578F-4CD1-B0B5-0E9832018966'
+
+select * from tblRPACredential
+
+sp_helptext 
+
+select * from tblRPAParameter
+where ParamKey = 'Bot Database'
+
+Update tblRPAParameter
+set ParamValue = '07.10.2023'
+where ParamKey = 'Bot Database'
+
+sp_helptext UspBSUpdProcessList
+
+select * from tblHRIndoEPDFTrxLog
+order by LogDateTime desc
+
+select * from tblRPACredential
+where UserName = 'R_EXPEN_BILL'
+
+select * from tblCNBillingTPM
+order by CreateDateTime desc
+
+select * from tblBSDetailLog
+
+select * from tblBSDetailLog
+where convert(date, StartDateTime) = convert(date, getdate())
+
+select * from tblBankRecon_Output with (nolock) where TimStmp > '2023-10-12' AND [Company Code] = '8371'
+
+
+Update tblRPACredential
+set Password = 'AvW5j52ZFqy7uI63A9oUFg=='
+where Id = '34D80D87-CD11-409E-9DFA-9B2C9FC3592A'
+
+select * from tblBSTreasuryDetailLog
+where convert(date, UploadDate) = convert(date, getdate())
+--where BankAccNo = '14017'
+
+sp_helptext UspBSTreasuryDetailLog
+
+select * from tblRocMonitorTask
+where DisplayName like '%Snow_Reports%'
+
+select top 10 * from tblSnowTicketAttachmentData
+where convert(date, CreateDateTime) = convert(date, getdate())
+
+select * from tblBSDetailLog
+where convert(date, StartDateTime) = convert(date, getdate()) AND BankName = 'Bank BRI'
+
+sp_helptext UspBSTreasuryDetailLog
+
+
+--Update tblRocMonitorTask
+--set Status = 1
+--where DisplayName like '%Inland_Ocean%'
+
+USE [APP_BPODB]
+GO
+
+-- UspCNBankOpenItemCoCodeSelNew
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dbo.UsptblBSDetailLogInfo') AND type IN ( N'P', N'PC',N'X',N'RF')) 
+BEGIN
+	DROP PROCEDURE [dbo].[UspBSDetailLogInfo]
+END
+GO
+
+exec UspBSDetailLogInfo
+
+CREATE PROCEDURE [dbo].[UspBSDetailLogInfo]
+
+	--@SAPInstance [nvarchar](50)--input
+
+AS
+SET NOCOUNT ON
+
+	SELECT a.[DownloadFilepath]
+
+	FROM [dbo].[tblBSDetailLog] a WITH(NOLOCK)
+	WHERE convert(date, StartDateTime) = convert(date, getdate())
+		AND ProcessName = 'SAP Upload Statement'
+SET NOCOUNT OFF
+GO

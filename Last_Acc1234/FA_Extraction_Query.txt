@@ -1,0 +1,41 @@
+select a.[财年],
+	   a.[记帐期间],
+	   a.[公司代码],
+	   a.[凭证编号],
+	   a.[本币],
+	   a.[凭证抬头文本],
+	   a.[凭证类型],
+	   a.[货币],
+	   a.[凭证日期],
+	   a.[过帐日期],
+	   a.[输入日期],
+	   a.[输入时间],
+	   a.[用户名],
+	   a.[冲销关于],
+	   a.[冲销原因],
+	   a.[事务代码],
+	   a.[参照],
+	   a.[预制人],
+	   b.[Team] 
+	From tblraw_CN_FA_680_FB03 a with(nolock)
+	inner join tblRef_CN_FA_SSCTeam b with (nolock) ON a.[用户名] = b.[UserId]
+
+	select a.[财年],
+	   a.[过帐期间],
+	   a.[凭证编号],
+	   a.[过账日期],
+	   a.[凭证类型],
+	   a.[凭证抬头文本],
+	   a.[参照],
+	   a.[用户名],
+	   a.[预制人],
+	   a.[本币],
+	   a.[冲销关于],
+	   a.[公司代码],
+	   a.[输入日期],
+	   a.[输入时间],
+	   a.[事务代码],
+	   a.[冲销原因],
+	   b.[Team] 
+	From tblRaw_CN_FA_666_FB03 a with(nolock)
+	inner join tblRef_CN_FA_SSCTeam b with (nolock) ON a.[用户名] = b.[UserId]

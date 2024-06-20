@@ -1,0 +1,119 @@
+--Update tblBSMasterData
+--set HasLoginIssue = 0
+--where BankName = 'Bank BRI'
+
+
+select * from tblBSConfig
+
+select * from tblBSMasterData
+where BankName = 'Bank Sinarmas'
+
+where CompanyID = 'IKPP'
+
+--select UploadToSAP, * from tblBSMasterData
+--where BankAccountNo in('032902000312308','032902000392308')
+
+
+select * from tblHRIndoEPDFTrxLog
+order by LogDateTime desc
+
+Update tblHRIndoEPDFTrxLog
+set SAPActionDone = 1
+
+
+select * from tblBSConfig
+--Update tblBSConfig
+--set MachineName = 'MYKULASPRPA0050'
+--where Id = '7'
+
+exec UspBSGetMasterListData
+
+--SET IDENTITY_INSERT tblBSServerMapping ON
+
+--INSERT INTO APP_BPODB. dbo. tblBSServerMapping(Id ,MachineName ,BankPortalGroupId ,UploadToSAPGroupId,IsS4HanaUpload ,IsEnabled ,InsertedDT ,[UpdatedDT])
+
+--SELECT Id ,MachineName ,BankPortalGroupId ,UploadToSAPGroupId,IsS4HanaUpload ,IsEnabled ,InsertedDT ,[UpdatedDT] FROM APP_BPODB_Staging. dbo.tblBSServerMapping
+
+
+Select * from tblRocMonitorTask
+
+--Update tblRocMonitorTask
+--set Status = 1
+--where ProcessName like '%148483%'
+
+select UploadToSAP, * from tblBSMasterData
+where UploadToSAP is null	
+
+EXEC [UspBSGetBatchProcessStatus]
+
+select * from tblBSProcessList
+
+select * from tblBSProcessBatch
+order by downloadstartdate desc
+
+sp_helptext UspBSInsProcessList
+
+sp_he
+
+
+select * from tblBSConfig
+where SettingKey = 'SAPConnDesc'
+
+select * from tblBSConfig
+
+--insert into tblBSConfig
+--Values(90,'BankStatementUploadbot','WTS','MYKULASPL0200','SAPS4ConnDesc', 'IKP Indonesia',1,GETDATE(),NULL)
+
+--SET IDENTITY_INSERT tblBSConfig ON
+
+--insert into tblBSConfig (Id,ConfigName,BotType,MachineName,SettingKey,SettingValue,IsEnabled,InsertedDT,UpdatedDT)
+--Values(61,'BankStatementUploadbot','WTS','','SAPS4ConnDesc', 'S/4 HANA QSA',1,GETDATE(),NULL)
+
+
+--Values(57,'BankStatementUploadbot','WTS','MYKULASPL0109','SAPS4ConnDesc', 'S/4 HANA QSA',1,NUll,NULL)
+
+--Update tblBSConfig
+--set SettingKey = 'SAP_S4TREASURYClient'
+--where SettingKey = 'SAP_TREASURYClient'
+
+SAP_S4TREASURYUserID
+SAP_S4TREASURYPassword
+SAP_S4TREASURYClient
+
+select * from tblBSServerMapping
+
+
+select * from tblBSConfig
+
+
+MYKULASPRPA0032
+
+
+select * from tblBSMasterData
+where UploadToSAP = 'S1'
+
+--DECLARE @Cnt INT
+--EXEC UspBSGetMasterListData 'SAP Upload Statement', 'MYKULASPL0109', @Count = @Cnt OUTPUT, @IncludeS4Hana = 1
+--exec UspBSGetMasterListData 'AA Download Statement', 'MYKULASPL0109', @Count = @Cnt OUTPUT, @IncludeS4Hana = 0
+
+--select * from tblBSProcessMonitoring
+
+
+
+
+--EXEC [UspBSGetBatchProcessStatus]
+
+--select * from tblBSServerMapping
+
+--DECLARE @Cnt uniqueidentifier
+--exec UspBSInsProcessList 'MYZCAASPRPA0020', '2023/08/21','2023/08/21', @BatchId = @Cnt OUTPUT
+--SELECT @Cnt
+
+--DECLARE @Cnt INT
+--EXEC UspBSGetMasterListData 'AA Download Statement', 'MYZCAASPRPA0020' ,1,'Bank BRI', '0F152FE5-0F43-4C66-98BD-74060E8DA1E5' ,0,0,1, @Count = @Cnt OUTPUT
+--SELECT @Cnt
+
+--DECLARE @Cnt INT
+--EXEC UspBSGetMasterListData 'AA Download Statement', 'MYKULASPRPA0032', 'Bank BRI', '3B389AD1-2F44-404E-BB05-70569D8C7044', @ReturnAsCount = 0, @Count = @Cnt OUTPUT
+
+--sp_helptext UspBSInsProcessList

@@ -1,0 +1,287 @@
+USE [FF67_Recon]
+GO
+
+/****** Object:  StoredProcedure [dbo].[SP_ARClearing_New]    Script Date: 10/11/2023 3:53:24 PM ******/
+DROP PROCEDURE [dbo].[SP_ARClearing_New]
+GO
+
+/****** Object:  StoredProcedure [dbo].[SP_ARClearing_New]    Script Date: 10/11/2023 3:53:25 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE[dbo].[SP_ARClearing_New]
+	@ReconDt date,
+	@GLCode varchar(max),
+	@CompanyCd varchar(max),
+	@Currency varchar(max),
+	@path varchar(max)
+
+AS
+
+BEGIN
+ -- SET NOCOUNT ON added to prevent extra result sets from
+ -- interfering with SELECT statements.
+ --SET NOCOUNT ON;
+Declare @CmpTy_SR varchar(max)
+Declare @tblRecon_Output table(Output_RunId int Identity(1,1), Matched_RunId int, Ty varchar(Max), Ref varchar(Max))
+
+--------------------------------- Begin AR Clearing ---------------------------------------------------------
+
+
+
+declare @tblAR_DZ table(Reference varchar(Max),[Document Header Text] varchar(Max),[Document Date] date,[Document currency] varchar(Max),[Amount in doc. curr.] decimal(18,2),RefNo varchar(Max),Assignment varchar(Max))
+declare @tblAR_ZB table([Document Date] date,[Document currency] varchar(Max),[Amount in doc. curr.] decimal(18,2),Text varchar(Max))
+declare @tblAR_ZB_DZ table (Reference varchar(Max),Text varchar(Max))
+
+Insert @tblAR_DZ
+Select Reference,[Document Header Text],cast([Document Date] as date),[Document currency],sum(cast(a.[Amount in doc. curr.] as decimal(18,2))) as [Amount in doc. curr.]
+,RIGHT(dbo.ExtractNumber([Document Header Text]),4),a.Assignment
+from tblBankRecon a where [Document Type] in('DZ','SA','DA') and Account=@GLCode
+group by Reference,[Document Header Text],[Document Date],[Document currency],Assignment
+
+
+
+
+Insert @tblAR_ZB
+Select cast([Document Date] as date),[Document currency],sum(cast(a.[Amount in doc. curr.] as decimal(18,2))) as [Amount in doc. curr.]
+,a.Text from tblBankRecon a where a.[Document Type]='ZB' and Account=@GLCode group by a.Text,a.[Document Date],a.[Document currency]
+
+Insert @tblAR_ZB_DZ
+Select b.Reference,a.Text from @tblAR_ZB a, @tblAR_DZ b where 1=1 and 
+ ((a.Text like '%'+ b.RefNo +'%' and b.RefNo<>'') or
+ (a.Text like '%'+ b.Assignment +'%')
+)
+ and a.[Document Date]=b.[Document Date] 
+and a.[Document currency]=b.[Document currency]
+and a.[Amount in doc. curr.]=b.[Amount in doc. curr.]*-1
+and (b.RefNo<>'' or b.Assignment<>'')
+
+
+
+Insert @tblRecon_Output
+Select a.RunId,'AR Clearing',(Select top 1 Reference from @tblAR_ZB_DZ where Reference=a.Reference) from tblBankRecon a where 1=1 and Account=@GLCode and a.Reference in (Select Reference from @tblAR_ZB_DZ)
+
+
+Insert @tblRecon_Output
+Select RunId,'AR Clearing',(Select top 1 Reference from @tblAR_ZB_DZ where Text=a.Text) from tblBankRecon a  where 1=1 and Account=@GLCode and a.Text in (Select Text from @tblAR_ZB_DZ)
+
+
+print 'AR completed'
+----------------------------------------- END --------------------------------------------------------------
+
+--------------------------------- Begin LC Charges ---------------------------------------------------------
+
+Declare @tblLC_KZ table(Reference varchar(max),[KZ_Amount in doc. curr.] decimal(18,2),docDt date)
+Declare @tblLC_KZ_ZB table(Reference varchar(max),[KZ_Amount in doc. curr.] decimal(18,2),[ZB_Amount in doc. curr.] decimal(18,2))
+--Declare @tblRecon_Output1 table(Matched_RunId int, Ty varchar(Max), Ref varchar(Max))
+insert @tblLC_KZ
+select kz.Reference,sum(cast(kz.[Amount in doc. curr.] as decimal(18,2))),cast([Document Date] as date)
+from tblBankRecon kz  where 1=1 and Account=@GLCode and  kz.[Document Type]='KZ' 
+group by Kz.Reference,cast([Document Date] as date)
+
+insert @tblLC_KZ_ZB
+Select a.Reference,a.[KZ_Amount in doc. curr.], (Select sum(cast([Amount in doc. curr.] as decimal(18,2))) from tblBankRecon where 1=1 and Account=@GLCode and [Document Type]='ZB' and  Text like '%'+ a.Reference +'%') 
+from @tblLC_KZ a
+
+--Select * from @tblLC_KZ_ZB
+
+insert @tblRecon_Output
+Select RunId,'LC Charges',Reference from tblBankRecon a where 1=1 and Account=@GLCode and a.Reference in (Select Reference from @tblLC_KZ_ZB where  [KZ_Amount in doc. curr.]=[ZB_Amount in doc. curr.]*-1)
+insert @tblRecon_Output
+Select a.RunId,'LC Charges',b.Reference from tblBankRecon a,(Select Reference from @tblLC_KZ_ZB where [KZ_Amount in doc. curr.]=[ZB_Amount in doc. curr.]*-1) b where 1=1 and Account=@GLCode and a.Text like '%'+ b.Reference +'%'
+
+
+--Select * from @tblRecon_Output1
+
+print 'LC completed'
+----------------------------------------- END ------------------------------------------------------------------
+
+--------------------------------- Begin Batch Clearing ---------------------------------------------------------
+
+
+Declare @tblBatch table (DocHeaderTxt varchar(max),[Document Date] varchar(max),[Document currency] varchar(Max),AmtDocCur decimal(18,2))
+Declare @tblBatch_ZB_ZP table (ZP_DocHeaderTxt varchar(max),[Document Date] varchar(max),[ZP_Document currency] varchar(Max),[ZP_Amount in doc. curr.] decimal(18,2),[ZB_Amount in doc. curr.]  decimal(18,2),ZB_RunId varchar(Max))
+Declare @tblBatch_ZB_ZP1 table (ZP_DocHeaderTxt varchar(max),[Document Date] varchar(max),[ZP_Document currency] varchar(Max),[ZP_Amount in doc. curr.] decimal(18,2),[ZB_Amount in doc. curr.]  decimal(18,2))
+Declare @tblRecon_Output1 table(Matched_RunId int, Ty varchar(Max), Ref varchar(Max))
+
+insert @tblBatch
+Select [Document Header Text],[Document Date],[Document currency],
+sum(cast([Amount in doc. curr.] as decimal(18,2)))
+from tblBankRecon where 1=1 and Account=@GLCode and [Document Type]='ZP' group by [Document Header Text],[Document currency],[Document Date]
+--Select * from @tblBatch
+
+Insert @tblBatch_ZB_ZP1
+Select a.*
+,(
+Select sum(cast([Amount in doc. curr.] as decimal(18,2))) from tblBankRecon where 1=1 and Account=@GLCode and [Document Date]=a.[Document Date] and [Document Type]='ZB' and (cast([Amount in doc. curr.] as decimal(18,2)))=a.AmtDocCur*-1
+group by [Amount in doc. curr.]
+)  as [ZB_Amount in doc. curr.]
+
+--,(Select RunId from tblBankRecon where 1=1 and Account=@GLCode and [Document Type]='ZB' and [Amount in doc. curr.]=a.AmtDocCur*-1 and [Document Date]=a.[Document Date] and [Document currency]=a.[Document currency])  as ZB_RunId
+from @tblBatch a  
+
+
+delete from @tblBatch_ZB_ZP1 where [ZP_Amount in doc. curr.]<>[ZB_Amount in doc. curr.]*-1
+
+--Select * from @tblBatch_ZB_ZP1
+
+Insert @tblBatch_ZB_ZP
+Select a.*,
+(Select  RunId from tblBankRecon where 1=1 and Account=@GLCode and [Document Type]='ZB' and [Amount in doc. curr.]=a.[ZP_Amount in doc. curr.]*-1 and [Document Date]=a.[Document Date] and [Document currency]=a.[ZP_Document currency])  from @tblBatch_ZB_ZP1 a
+
+
+
+Insert @tblRecon_Output
+Select RunId,'Batch Clearing',[Document Header Text] from tblBankRecon where 1=1 and Account=@GLCode and [Document Header Text] in (Select ZP_DocHeaderTxt from @tblBatch_ZB_ZP where ZB_RunId is not null)
+
+
+Insert @tblRecon_Output
+Select a.RunId,'Batch Clearing',b.ZP_DocHeaderTxt from tblBankRecon a, @tblBatch_ZB_ZP b where  a.RunId=b.ZB_RunId and  Account=@GLCode 
+
+print 'Batch completed'
+----------------------------------------- END ------------------------------------------------------------------
+
+--------------------------------- Begin Bank Charges ---------------------------------------------------------
+
+Declare @tblBKCharges table(RunId Int identity,KeyWord varchar(max),Amt varchar(max),BankNm  varchar(max))
+DECLARE @BKCH_GLCnt Int
+DECLARE @BKCH_Loop Int
+Declare @BKCH_KeyWord as varchar(Max)
+Declare @BKCH_BankNm as varchar(Max)
+Declare @BKCH_Amt as decimal(18,2)
+
+Insert @tblBKCharges
+Select Keyword,Amount,BankNm from FF67_BankChargesDetails where 1=1  group by Keyword,Amount,BankNm --and CompanyCd='8008' and GLCode=@GLCode
+
+SET @BKCH_Loop = 1
+Set @BKCH_GLCnt=(select count(*) from @tblBKCharges)
+
+
+WHILE @BKCH_Loop <= @BKCH_GLCnt
+Begin
+	SET @BKCH_KeyWord=(Select KeyWord from @tblBKCharges where RunId=@BKCH_Loop)
+	SET @BKCH_Amt=(Select Amt from @tblBKCharges where RunId=@BKCH_Loop)
+	SET @BKCH_BankNm=(Select BankNm from @tblBKCharges where RunId=@BKCH_Loop)
+
+	--print @KeyWord +'-'+ @Amt
+	Insert @tblRecon_Output
+	Select RunId,'Bank Charges','Bank Charges' from tblBankRecon where [Document Type]='ZB' and [Company Code]=@CompanyCd and Account=@GLCode
+	and Text like '%'+@BKCH_KeyWord +'%'
+	and (cast([Amount in doc. curr.] as decimal(18,2))%@BKCH_Amt)=0
+
+
+	SET @BKCH_Loop = @BKCH_Loop + 1;
+End
+----------------------------------------- END ------------------------------------------------------------------
+--------------------------------- Begin Interest Charges -------------------------------------------------------
+
+Declare @tblCmpCdAcc table (CompanyCd int,Account Int)
+Declare @tblKeywordList table (RunId int identity,CompanyCd int,BKGLCd Int,Currency varchar(max),RefTxt1 varchar(max),RefTxt2 varchar(max))
+DECLARE @BKInt_Loop Int
+DECLARE @BKInt_Cnt Int
+
+DECLARE @RefTxt1_Cnt Int,@RefTxt2_Cnt Int
+
+DECLARE @CmpCd as varchar(Max),@GlCd as varchar(Max),@Currency_int as varchar(Max),@RexTxt1 as varchar(Max),@RexTxt2 as varchar(Max)
+
+Insert @tblCmpCdAcc
+Select [Company Code],Account from tblBankRecon where [Company Code] in(Select CompanyCd from FF67_BankInterest_CompanyCode where Prod='Y') group  by [Company Code],Account
+
+Insert @tblKeywordList
+Select CompanyCd,BKGLCd,Currency,TextRef1,TextRef2 from FF67_BankInterestRecon where CompanyCd in(Select CompanyCd from @tblCmpCdAcc) and BKGLCd in(Select Account from @tblCmpCdAcc)
+
+--Select * from FF67_BankInterestRecon
+
+
+SET @BKInt_Loop = 1
+Set @BKInt_Cnt=(select count(*) from @tblKeywordList)
+
+WHILE @BKInt_Loop <= @BKInt_Cnt
+Begin
+	Set @CmpCd=(Select top 1 CompanyCd from @tblKeywordList where RunId=@BKInt_Loop)
+	Set @GlCd=(Select top 1 BKGLCd from @tblKeywordList where RunId=@BKInt_Loop)
+	Set @Currency_int=(Select top 1 Currency from @tblKeywordList where RunId=@BKInt_Loop)
+	Set @RexTxt1=(Select top 1 replace(RefTxt1,'MM/YYYY',cast(MONTH(GetDate()) as varchar)+'/'+ cast(YEAR(GetDate()) as varchar)) from @tblKeywordList where RunId=@BKInt_Loop and [CompanyCd]=@CmpCd and BKGLCd=@GlCd and [Currency]=@Currency_int)
+	Set @RexTxt2=(Select top 1 RefTxt2 from @tblKeywordList where RunId=@BKInt_Loop and [CompanyCd]=@CmpCd and BKGLCd=@GlCd and [Currency]=@Currency_int )
+
+	--Select * from tblBankRecon where [Company Code]=@CmpCd and Account=@GlCd and [Document currency]=@Currency and Text like '%'+ @RexTxt1 +'%' and Text like '%'+ @RexTxt2 +'%' 
+	if @RexTxt2<>''
+	Begin
+		Set @RefTxt1_Cnt=(Select Count(RunId) from tblBankRecon where [Company Code]=@CmpCd and Account=@GlCd and [Document currency]=@Currency_int  and lower(Text) =lower(@RexTxt1))
+		Set @RefTxt2_Cnt=(Select Count(RunId) from tblBankRecon where [Company Code]=@CmpCd and Account=@GlCd and [Document currency]=@Currency_int  and lower(Text) =lower(@RexTxt2))
+
+		if @RefTxt1_Cnt=@RefTxt2_Cnt
+		Begin
+			Insert @tblRecon_Output
+			Select RunId,'Bank Interest','Bank Interest' from tblBankRecon where [Company Code]=@CmpCd and Account=@GlCd and [Document currency]=@Currency_int  and ((lower(Text) =lower(@RexTxt1)) or (lower(Text) =lower(@RexTxt2)))
+		End
+	End
+	else
+	Begin
+		Insert @tblRecon_Output
+		Select RunId,'Bank Interest','Bank Interest' from tblBankRecon where [Company Code]=@CmpCd and Account=@GlCd and [Document currency]=@Currency_int  and lower(Text) =lower(@RexTxt2) 
+	End
+	--print @GlCd +'-'+ @RexTxt1 +'-'+ @RexTxt2
+	SET @BKInt_Loop = @BKInt_Loop + 1;
+end 
+
+----------------------------------------- END ------------------------------------------------------------------
+
+--Select * from @tblRecon_Output
+
+Select cast(@ReconDt as date),a.[Company Code],
+a.[Account],
+a.[Year/month],
+a.[User name],
+a.[Reference],
+a.[Document Header Text],
+a.[Assignment],
+a.[Document Type],
+a.[Document Number],
+(a.[Entry Date] ) as [Entry Date],
+(a.[Posting Date]) as [Posting Date],
+cast(a.[Document Date] as date) as [Document Date],
+a.[Document currency],
+a.[Amount in doc. curr.],
+a.[Amount in local currency],
+a.[Amount in loc.curr.2],
+a.[Text],(Select top 1 Ty from @tblRecon_Output where Matched_RunId=a.RunId group by Ty,Ref ) as [Recon Category]
+,(Select top 1 Ref from @tblRecon_Output where Matched_RunId=a.RunId group by Ty,Ref ) as [Ref],null,null,getdate() 
+from tblBankRecon a where 1=1 and Account=@GLCode 
+
+--print 'AR7'
+
+--Select * from FF67_BankReconTran
+
+Set @CmpTy_SR=(Select a.Ty from FF67_CompanyCdMas a where a.CompanyCd=@CompanyCd)
+
+--delete from FF67_BankReconTran where GLCode=@GLCode and dt=Cast(@ReconDt as date) and CompanyCd=@CompanyCd and Currency=@Currency
+
+Insert FF67_BankReconTran
+Select 
+--(Select RunId from FF67_BankList where GLCode_St<=@GLCode and GLCode>=@GLCode and CompanyCd=@CompanyCd and Currency=@Currency) --- Bank ListId
+iif(@CmpTy_SR='Single',
+(Select RunId from FF67_BankList where GLCode=@GLCode and CompanyCd=@CompanyCd and Currency=@Currency)
+,(Select top 1 RunId from FF67_BankList where GLCode_St<=@GLCode and GLCode>=@GLCode and CompanyCd=@CompanyCd and Currency=@Currency) 
+)
+,@GLCode,@CompanyCd,@Currency,cast(@ReconDt as date),'Completed'
+,(Select Count(RunId) from tblBankRecon where 1=1 and Account=@GLCode and [Document Type]='ZB')
+,(Select Count(Output_RunId) from @tblRecon_Output where Ty='AR Clearing')
+,(Select Count(Output_RunId) from @tblRecon_Output where Ty='LC Charges')
+,(Select Count(Output_RunId) from @tblRecon_Output where Ty='Batch Clearing')
+,'0',@path,'DBA',Getdate()
+
+update FF67_BankReconTran set Status='' where TotLineItem='0' and dt=Cast(@ReconDt as date) 
+
+--SELECT 'a.['+COLUMN_NAME+'],'
+--FROM INFORMATION_SCHEMA.COLUMNS
+--WHERE TABLE_NAME = N'tblBankRecon'
+
+
+END
+GO
+
+
